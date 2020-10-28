@@ -29,4 +29,9 @@ pact {
     pactBrokerUsername = project.pactBrokerUser
     pactBrokerPassword = project.pactBrokerPassword
   }
+  reports {
+    defaultReports() // adds the standard console output
+    markdown // report in markdown format
+    json // report in json format
+  }
 }

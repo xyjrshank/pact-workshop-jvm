@@ -50,4 +50,9 @@ pact {
       hasPactsFromPactBroker(project.pactBrokerUrl, authentication: ['Basic', pactBrokerUser, pactBrokerPassword])
     }
   }
+  reports {
+    defaultReports() // adds the standard console output
+    markdown // report in markdown format
+    json // report in json format
+  }
 }
