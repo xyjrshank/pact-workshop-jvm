@@ -47,7 +47,7 @@ pact {
       terminateProviderTask = stopProvider
       stateChangeUrl = url('http://localhost:8080/pactStateChange')
 
-      hasPactsFromPactBroker("https://pact-broker.xyleme.com", authentication: ['Basic', pactBrokerUser, pactBrokerPassword])
+      hasPactsFromPactBroker(project.pactBrokerUrl, authentication: ['Basic', pactBrokerUser, pactBrokerPassword])
     }
   }
 }

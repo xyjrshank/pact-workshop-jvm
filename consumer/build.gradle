@@ -19,7 +19,7 @@ dependencies {
 
 pact {
   publish {
-    pactBrokerUrl = 'https://pact-broker.xyleme.com'
+    pactBrokerUrl = project.pactBrokerUrl
     pactBrokerUsername = project.pactBrokerUser
     pactBrokerPassword = project.pactBrokerPassword
     tags = ['test']
