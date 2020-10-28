@@ -207,15 +207,15 @@ Let us add Pact to the project and write a consumer pact test.
 ```java
 public class ClientPactTest {
 
-  // This sets up a mock server that pretends to be our provider
+  // This sets up a mock server that pretends to be SampleProvider
   @Rule
-  public PactProviderRule provider = new PactProviderRule("Our Provider", "localhost", 1234, this);
+  public PactProviderRule provider = new PactProviderRule("SampleProvider", "localhost", 1234, this);
 
   private LocalDateTime dateTime;
   private String dateResult;
 
   // This defines the expected interaction for out test
-  @Pact(provider = "Our Provider", consumer = "Our Little Consumer")
+  @Pact(provider = "SampleProvider", consumer = "SampleConsumer")
   public RequestResponsePact pact(PactDslWithProvider builder) {
     dateTime = LocalDateTime.now();
     dateResult = "2013-08-16T15:31:20+10:00";
@@ -237,7 +237,7 @@ public class ClientPactTest {
   }
 
   @Test
-  @PactVerification("Our Provider")
+  @PactVerification("SampleProvider")
   public void pactWithOurProvider() throws UnirestException {
     // Set up our HTTP client class
     Client client = new Client(provider.getUrl());
@@ -256,7 +256,7 @@ public class ClientPactTest {
 ![Test using Pact](diagrams/step3_pact.png)
 
 
-This test starts a mock server on a random port that pretends to be our provider. To get this to work we needed to update
+This test starts a mock server on a random port that pretends to be SampleProvider. To get this to work we needed to update
 our consumer to pass in the URL of the provider. We also updated the `fetchAndProcessData` method to pass in the
 query parameter.
 
@@ -270,15 +270,15 @@ BUILD SUCCESSFUL in 8s
 4 actionable tasks: 1 executed, 3 up-to-date
 ```
 
-Generated pact file (*consumer/build/pacts/Our Little Consumer-Our Provider.json*):
+Generated pact file (*consumer/build/pacts/SampleConsumer-SampleProvider.json*):
 
 ```json
 {
   "provider": {
-    "name": "Our Provider"
+    "name": "SampleProvider"
   },
   "consumer": {
-    "name": "Our Little Consumer"
+    "name": "SampleConsumer"
   },
   "interactions": [
     {
@@ -389,8 +389,8 @@ pact {
       startProviderTask = startProvider
       terminateProviderTask = stopProvider
 
-      hasPactWith('Our Little Consumer') {
-        pactFile = file("$buildDir/pacts/Our Little Consumer-Our Provider.json")
+      hasPactWith('SampleConsumer') {
+        pactFile = file("$buildDir/pacts/SampleConsumer-SampleProvider.json")
       }
     }
   }
@@ -421,8 +421,8 @@ java -jar /home/ronald/Development/Projects/Pact/pact-workshop-jvm/providers/spr
 
 > Task :providers:springboot-provider:pactVerify_Our_Provider FAILED
 
-Verifying a pact between Our Little Consumer and Our_Provider
-  [Using File /home/ronald/Development/Projects/Pact/pact-workshop-jvm/providers/springboot-provider/build/pacts/Our Little Consumer-Our Provider.json]
+Verifying a pact between SampleConsumer and Our_Provider
+  [Using File /home/ronald/Development/Projects/Pact/pact-workshop-jvm/providers/springboot-provider/build/pacts/SampleConsumer-SampleProvider.json]
   Given data count > 0
          WARNING: State Change ignored as there is no stateChange URL
   a request for json data
@@ -435,7 +435,7 @@ NOTE: Skipping publishing of verification results as it has been disabled (pact.
 
 Failures:
 
-1) Verifying a pact between Our Little Consumer and Our_Provider - a request for json data Given data count > 0
+1) Verifying a pact between SampleConsumer and Our_Provider - a request for json data Given data count > 0
 
     1.1) BodyMismatch: $ BodyMismatch: Expected date='2013-08-16T15:31:20+10:00' but was missing
 
@@ -477,11 +477,11 @@ In this step we will verify the same pact file against the Dropwizard provider u
 re-run the `publishWorkshopPact` to get the pact file in the provider project.
 
 We add the pact provider junit jar and the dropwizard testing jar to our project dependencies, and then we can create a
-simple test to verify our provider.
+simple test to verify SampleProvider.
 
 ```java
 @RunWith(PactRunner.class)
-@Provider("Our Provider")
+@Provider("SampleProvider")
 @PactFolder("build/pacts")
 public class PactVerificationTest {
   @ClassRule
@@ -509,7 +509,7 @@ Starting a Gradle Daemon, 1 incompatible and 2 stopped Daemons could not be reus
 
 > Task :providers:dropwizard-provider:test
 
-au.com.dius.pactworkshop.dropwizardprovider.PactVerificationTest > Our Little Consumer - a request for json data FAILED
+au.com.dius.pactworkshop.dropwizardprovider.PactVerificationTest > SampleConsumer - a request for json data FAILED
     java.lang.AssertionError
 
 1 test completed, 1 failed
@@ -624,7 +624,7 @@ tests we get the expected failure about the date format.
 ```
 Failures:
 
-1) Verifying a pact between Our Little Consumer and Our_Provider - a request for json data Given data count > 0
+1) Verifying a pact between SampleConsumer and Our_Provider - a request for json data Given data count > 0
 
     1.1) BodyMismatch: $.validDate BodyMismatch: Expected "2020-06-16T13:01:21.675150" to match a datetime of 'yyyy-MM-dd'T'HH:mm:ssXX': Text '2020-06-16T13:01:21.675150' could not be parsed at index 19
 
@@ -668,7 +668,7 @@ Here are the two additional tests:
 *consumer/src/test/java/au/com/dius/pactworkshop/consumer/ClientPactTest.java:*
 
 ```java
-  @Pact(provider = "Our Provider", consumer = "Our Little Consumer")
+  @Pact(provider = "SampleProvider", consumer = "SampleConsumer")
   public RequestResponsePact pactForMissingDateParameter(PactDslWithProvider builder) {
     dateTime = LocalDateTime.now();
     dateResult = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -686,7 +686,7 @@ Here are the two additional tests:
   }
 
   @Test
-  @PactVerification(value = "Our Provider", fragment = "pactForMissingDateParameter")
+  @PactVerification(value = "SampleProvider", fragment = "pactForMissingDateParameter")
   public void handlesAMissingDateParameter() throws UnirestException {
     // Set up our HTTP client class
     Client client = new Client(provider.getUrl());
@@ -699,7 +699,7 @@ Here are the two additional tests:
     assertThat(result.get(1), nullValue());
   }
 
-  @Pact(provider = "Our Provider", consumer = "Our Little Consumer")
+  @Pact(provider = "SampleProvider", consumer = "SampleConsumer")
   public RequestResponsePact pactForInvalidDateParameter(PactDslWithProvider builder) {
     dateTime = LocalDateTime.now();
     dateResult = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -718,7 +718,7 @@ Here are the two additional tests:
   }
 
   @Test
-  @PactVerification(value = "Our Provider", fragment = "pactForInvalidDateParameter")
+  @PactVerification(value = "SampleProvider", fragment = "pactForInvalidDateParameter")
   public void handlesAInvalidDateParameter() throws UnirestException {
     // Set up our HTTP client class
     Client client = new Client(provider.getUrl());
@@ -734,7 +734,7 @@ Here are the two additional tests:
 
 After running our specs, the pact file will have 2 new interactions.
 
-*consumer/build/pacts/Our Little Consumer-Our Provider.json:*
+*consumer/build/pacts/SampleConsumer-SampleProvider.json:*
 
 ```json
 [
@@ -816,14 +816,14 @@ After running our specs, the pact file will have 2 new interactions.
 
 ## Step 9 - Verify the provider with the missing/invalid date query parameter
    
-Let us run this updated pact file with our providers (first run the `publishWorkshopPact` task). We get a 500 response as the provider can't handle the missing
+Let us run this updated pact file with SampleProviders (first run the `publishWorkshopPact` task). We get a 500 response as the provider can't handle the missing
 or incorrect date.
 
 Here is the springboot test output:
 
 ```console
-Verifying a pact between Our Little Consumer and Our_Provider
-  [Using File /home/ronald/Development/Projects/Pact/pact-workshop-jvm/providers/springboot-provider/build/pacts/Our Little Consumer-Our Provider.json]
+Verifying a pact between SampleConsumer and Our_Provider
+  [Using File /home/ronald/Development/Projects/Pact/pact-workshop-jvm/providers/springboot-provider/build/pacts/SampleConsumer-SampleProvider.json]
   Given data count > 0
          WARNING: State Change ignored as there is no stateChange URL
   a request for json data
@@ -848,7 +848,7 @@ NOTE: Skipping publishing of verification results as it has been disabled (pact.
 
 Failures:
 
-1) Verifying a pact between Our Little Consumer and Our_Provider - a request with a missing date parameter Given data count > 0
+1) Verifying a pact between SampleConsumer and Our_Provider - a request with a missing date parameter Given data count > 0
 
     1.1) StatusMismatch: expected status of 400 but was 500
 
@@ -864,7 +864,7 @@ Time to update the providers to handle these cases.
 
 ## Step 10 - Update the providers to handle the missing/invalid query parameters
 
-Let's fix our providers so they generate the correct responses for the query parameters.
+Let's fix SampleProviders so they generate the correct responses for the query parameters.
 
 ### Dropwizard provider
 
@@ -965,7 +965,7 @@ zero error in our client. This is an important bit of information to add to our 
 consumer test for this.
 
 ```java
-    @Pact(provider = "Our Provider", consumer = "Our Little Consumer")
+    @Pact(provider = "SampleProvider", consumer = "SampleConsumer")
     public RequestResponsePact pactForWhenThereIsNoData(PactDslWithProvider builder) {
       dateTime = LocalDateTime.now();
       return builder
@@ -980,7 +980,7 @@ consumer test for this.
     }
   
     @Test
-    @PactVerification(value = "Our Provider", fragment = "pactForWhenThereIsNoData")
+    @PactVerification(value = "SampleProvider", fragment = "pactForWhenThereIsNoData")
     public void whenThereIsNoData() throws UnirestException {
       // Set up our HTTP client class
       Client client = new Client(provider.getUrl());
@@ -1023,7 +1023,7 @@ This adds a new interaction to the pact file:
 
 ## Step 12 - provider states for the providers
 
-To be able to verify our providers, we need to be able to change the data that the provider returns. There are different
+To be able to verify SampleProviders, we need to be able to change the data that the provider returns. There are different
 ways of doing this depending on how the provider is being verified.
 
 
@@ -1121,8 +1121,8 @@ pact {
       terminateProviderTask = stopProvider
       stateChangeUrl = url('http://localhost:8090/pactStateChange')
 
-      hasPactWith('Our Little Consumer') {
-        pactFile = file("$buildDir/pacts/Our Little Consumer-Our Provider.json")
+      hasPactWith('SampleConsumer') {
+        pactFile = file("$buildDir/pacts/SampleConsumer-SampleProvider.json")
       }
     }
   }
@@ -1255,7 +1255,7 @@ Updated test:
 
 ```java
 @RunWith(PactRunner.class)
-@Provider("Our Provider")
+@Provider("SampleProvider")
 @PactBroker(host = "test.pact.dius.com.au", protocol = "https", port = "443",
   authentication = @PactBrokerAuth(username = "${pactBrokerUser}", password = "${pactBrokerPassword}"))
 public class PactVerificationTest {
@@ -1288,7 +1288,7 @@ Updated build file:
 ```groovy
 pact {
   serviceProviders {
-    'Our Provider' {
+    'SampleProvider' {
       port = 8090
 
       startProviderTask = startProvider

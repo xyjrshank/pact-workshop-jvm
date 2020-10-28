@@ -22,15 +22,15 @@ import static org.hamcrest.Matchers.nullValue;
 
 public class ClientPactTest {
 
-  // This sets up a mock server that pretends to be our provider
+  // This sets up a mock server that pretends to be SampleProvider
   @Rule
-  public PactProviderRule provider = new PactProviderRule("Our Provider", this);
+  public PactProviderRule provider = new PactProviderRule("SampleProvider", this);
 
   private LocalDateTime dateTime;
   private OffsetDateTime dateResult;
 
   // This defines the expected interaction for out test
-  @Pact(provider = "Our Provider", consumer = "Our Little Consumer")
+  @Pact(provider = "SampleProvider", consumer = "SampleConsumer")
   public RequestResponsePact pact(PactDslWithProvider builder) {
     dateTime = LocalDateTime.now();
     dateResult = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -52,7 +52,7 @@ public class ClientPactTest {
   }
 
   @Test
-  @PactVerification(value = "Our Provider", fragment = "pact")
+  @PactVerification(value = "SampleProvider", fragment = "pact")
   public void pactWithOurProvider() throws UnirestException {
     // Set up our HTTP client class
     Client client = new Client(provider.getUrl());
@@ -65,7 +65,7 @@ public class ClientPactTest {
     assertThat(result.get(1), is(dateResult));
   }
 
-  @Pact(provider = "Our Provider", consumer = "Our Little Consumer")
+  @Pact(provider = "SampleProvider", consumer = "SampleConsumer")
   public RequestResponsePact pactForMissingDateParameter(PactDslWithProvider builder) {
     return builder
             .given("data count > 0")
@@ -81,7 +81,7 @@ public class ClientPactTest {
   }
 
   @Test
-  @PactVerification(value = "Our Provider", fragment = "pactForMissingDateParameter")
+  @PactVerification(value = "SampleProvider", fragment = "pactForMissingDateParameter")
   public void handlesAMissingDateParameter() throws UnirestException {
     // Set up our HTTP client class
     Client client = new Client(provider.getUrl());
@@ -94,7 +94,7 @@ public class ClientPactTest {
     assertThat(result.get(1), nullValue());
   }
 
-  @Pact(provider = "Our Provider", consumer = "Our Little Consumer")
+  @Pact(provider = "SampleProvider", consumer = "SampleConsumer")
   public RequestResponsePact pactForInvalidDateParameter(PactDslWithProvider builder) {
     return builder
             .given("data count > 0")
@@ -111,7 +111,7 @@ public class ClientPactTest {
   }
 
   @Test
-  @PactVerification(value = "Our Provider", fragment = "pactForInvalidDateParameter")
+  @PactVerification(value = "SampleProvider", fragment = "pactForInvalidDateParameter")
   public void handlesAInvalidDateParameter() throws UnirestException {
     // Set up our HTTP client class
     Client client = new Client(provider.getUrl());
@@ -124,7 +124,7 @@ public class ClientPactTest {
     assertThat(result.get(1), nullValue());
   }
 
-  @Pact(provider = "Our Provider", consumer = "Our Little Consumer")
+  @Pact(provider = "SampleProvider", consumer = "SampleConsumer")
   public RequestResponsePact pactForWhenThereIsNoData(PactDslWithProvider builder) {
     dateTime = LocalDateTime.now();
     return builder
@@ -139,7 +139,7 @@ public class ClientPactTest {
   }
 
   @Test
-  @PactVerification(value = "Our Provider", fragment = "pactForWhenThereIsNoData")
+  @PactVerification(value = "SampleProvider", fragment = "pactForWhenThereIsNoData")
   public void whenThereIsNoData() throws UnirestException {
     // Set up our HTTP client class
     Client client = new Client(provider.getUrl());
