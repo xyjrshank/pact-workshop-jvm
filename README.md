@@ -21,7 +21,7 @@ The client is quite simple and looks like this
 ```java
 public class Client {
   public Object loadProviderJson() throws UnirestException {
-    return Unirest.get("http://localhost:8080/provider.json")
+    return Unirest.get("http://localhost:8090/provider.json")
       .queryString("validDate", LocalDateTime.now().toString())
       .asJson().getBody();
   }
@@ -130,7 +130,7 @@ Let's now test our updated client. We're using [Wiremock](http://wiremock.org/) 
 public class ClientTest {
 
   @Rule
-  public WireMockRule wireMockRule = new WireMockRule(8080);
+  public WireMockRule wireMockRule = new WireMockRule(8090);
 
   @Test
   public void canProcessTheJsonPayloadFromTheProvider() throws UnirestException {
@@ -384,7 +384,7 @@ task stopProvider(type: KillProcessTask) {
 pact {
   serviceProviders {
     'Our_Provider' {
-      port = 8080
+      port = 8090
 
       startProviderTask = startProvider
       terminateProviderTask = stopProvider
@@ -489,7 +489,7 @@ public class PactVerificationTest {
     ResourceHelpers.resourceFilePath("main-app-config.yaml"));
 
   @TestTarget
-  public final Target target = new HttpTarget(8080);
+  public final Target target = new HttpTarget(8090);
 
   @State("data count > 0")
   public void dataCountGreaterThanZero() {
@@ -1115,11 +1115,11 @@ First, lets enable the state change URL handling in the build gradle file.
 pact {
   serviceProviders {
     'Our_Provider' {
-      port = 8080
+      port = 8090
 
       startProviderTask = startProvider
       terminateProviderTask = stopProvider
-      stateChangeUrl = url('http://localhost:8080/pactStateChange')
+      stateChangeUrl = url('http://localhost:8090/pactStateChange')
 
       hasPactWith('Our Little Consumer') {
         pactFile = file("$buildDir/pacts/Our Little Consumer-Our Provider.json")
@@ -1264,7 +1264,7 @@ public class PactVerificationTest {
     ResourceHelpers.resourceFilePath("main-app-config.yaml"));
 
   @TestTarget
-  public final Target target = new HttpTarget(8080);
+  public final Target target = new HttpTarget(8090);
 
   @State("data count > 0")
   public void dataCountGreaterThanZero() {
@@ -1289,11 +1289,11 @@ Updated build file:
 pact {
   serviceProviders {
     'Our Provider' {
-      port = 8080
+      port = 8090
 
       startProviderTask = startProvider
       terminateProviderTask = stopProvider
-      stateChangeUrl = url('http://localhost:8080/pactStateChange')
+      stateChangeUrl = url('http://localhost:8090/pactStateChange')
 
       hasPactsFromPactBroker("https://test.pact.dius.com.au", authentication: ['Basic', pactBrokerUser, pactBrokerPassword])
     }

@@ -23,7 +23,7 @@ public class PactVerificationTest {
     ResourceHelpers.resourceFilePath("main-app-config.yaml"));
 
   @TestTarget
-  public final Target target = new HttpTarget(8080);
+  public final Target target = new HttpTarget(8090);
 
   @State("data count > 0")
   public void dataCountGreaterThanZero() {

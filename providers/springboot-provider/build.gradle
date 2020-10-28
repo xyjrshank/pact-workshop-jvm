@@ -41,11 +41,11 @@ task stopProvider(type: KillProcessTask) {
 pact {
   serviceProviders {
     'Our Provider' {
-      port = 8080
+      port = 8090
 
       startProviderTask = startProvider
       terminateProviderTask = stopProvider
-      stateChangeUrl = url('http://localhost:8080/pactStateChange')
+      stateChangeUrl = url('http://localhost:8090/pactStateChange')
 
       hasPactsFromPactBroker(project.pactBrokerUrl, authentication: ['Basic', pactBrokerUser, pactBrokerPassword])
     }

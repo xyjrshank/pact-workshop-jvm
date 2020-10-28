@@ -24,4 +24,9 @@ pact {
     pactBrokerPassword = project.pactBrokerPassword
     tags = ['test']
   }
+  broker {
+    pactBrokerUrl = project.pactBrokerUrl
+    pactBrokerUsername = project.pactBrokerUser
+    pactBrokerPassword = project.pactBrokerPassword
+  }
 }
