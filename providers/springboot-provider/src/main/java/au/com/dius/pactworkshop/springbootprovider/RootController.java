@@ -23,7 +23,7 @@ public class RootController {
         try {
           LocalDateTime validTime = LocalDateTime.parse(validDate);
           Map<String, Serializable> map = new HashMap<>(3);
-          map.put("test", "YES");
+          map.put("test", "NO");
           map.put("validDate", OffsetDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXX")));
           map.put("count", DataStore.INSTANCE.getDataCount());
           return map;
